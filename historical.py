@@ -4,6 +4,7 @@ import pandas as pd
 import math
 import os.path
 import time
+import schedule
 from binance.client import Client
 from datetime import timedelta, datetime
 from dateutil import parser
@@ -46,6 +47,13 @@ def get_all_binance(symbol, kline_size, save = False):
     print('All caught up..!')
     return data_df
 
-binance_symbols = ["BTCUSDT", "ETHBTC"]
-for symbol in binance_symbols:
-    get_all_binance(symbol, '1h', save = True)
+def job():
+    binance_symbols = ["BTCUSDT", "ETHBTC"]
+    for symbol in binance_symbols:
+      get_all_binance(symbol, '1h', save = True)
+
+schedule.every().hour.do(job)
+
+while True:
+    schedule.run_pending()
+    time.sleep(1)
