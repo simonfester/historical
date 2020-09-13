@@ -1,0 +1,6 @@
+*.env
+*.cfg
+/data
+__pycache__
+*.vscode/
+*.ipynb
