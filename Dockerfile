@@ -1,7 +1,7 @@
 FROM continuumio/miniconda3
 
 RUN conda install pandas -y \
-&& pip install schedule python.binance
+&& pip install python.binance
 
 ADD historical.py /
 
