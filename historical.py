@@ -1,15 +1,17 @@
 # https://medium.com/swlh/retrieving-full-historical-data-for-every-cryptocurrency-on-binance-bitmex-using-the-python-apis-27b47fd8137f
+
 # IMPORTS
 import pandas as pd
 import math
 import os.path
 import time
+
+from pathlib import Path
 from binance.client import Client
 from datetime import timedelta, datetime
 from dateutil import parser
-from tqdm import tqdm_notebook #(Optional, used for progress-bars)
 
-### API
+### API - not needed
 binance_api_key = '[REDACTED]'    #Enter your own API-key here
 binance_api_secret = '[REDACTED]' #Enter your own API-secret here
 
@@ -17,6 +19,7 @@ binance_api_secret = '[REDACTED]' #Enter your own API-secret here
 binsizes = {"1m": 1, "5m": 5, "1h": 60, "1d": 1440}
 batch_size = 750
 binance_client = Client(api_key=binance_api_key, api_secret=binance_api_secret)
+data_folder = Path('data')
 
 ### FUNCTIONS
 def minutes_of_new_data(symbol, kline_size, data, source):
@@ -27,7 +30,7 @@ def minutes_of_new_data(symbol, kline_size, data, source):
 
 def get_all_binance(symbol, kline_size, save = False):
     filename = '%s-%s-data.csv' % (symbol, kline_size)
-    if os.path.isfile('/data/' + filename): data_df = pd.read_csv(filename) # if a file already exists, read it in
+    if os.path.isfile(data_folder / filename): data_df = pd.read_csv(data_folder / filename) # if a file already exists, read it in
     else: data_df = pd.DataFrame()
     oldest_point, newest_point = minutes_of_new_data(symbol, kline_size, data_df, source = "binance")
     delta_min = (newest_point - oldest_point).total_seconds()/60
@@ -42,10 +45,13 @@ def get_all_binance(symbol, kline_size, save = False):
         data_df = data_df.append(temp_df)
     else: data_df = data
     data_df.set_index('timestamp', inplace=True)
-    if save: data_df.to_csv('/data/' + filename)
+    if save: data_df.to_csv(data_folder / filename)
     print('All caught up..!')
     return data_df
 
 binance_symbols = ["BTCUSDT", "ETHBTC"]
 for symbol in binance_symbols:
  get_all_binance(symbol, '1m', save = True)
+ get_all_binance(symbol, '5m', save = True)
+ get_all_binance(symbol, '1h', save = True)
+ get_all_binance(symbol, '1d', save = True)
