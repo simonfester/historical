@@ -1,8 +1,6 @@
-FROM continuumio/miniconda3
+FROM python:latest
 
-RUN conda install pandas -y \
-&& pip install python.binance
-
+RUN pip install --no-cache-dir pandas python.binance
 ADD historical.py /
 
 CMD [ "python", "./historical.py" ]
