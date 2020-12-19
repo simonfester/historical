@@ -50,8 +50,10 @@ def get_all_binance(symbol, kline_size, save = False):
     return data_df
 
 binance_symbols = ["BTCUSDT", "ETHBTC"]
-for symbol in binance_symbols:
- get_all_binance(symbol, '1m', save = True)
- get_all_binance(symbol, '5m', save = True)
- get_all_binance(symbol, '1h', save = True)
- get_all_binance(symbol, '1d', save = True)
+while True:
+  for symbol in binance_symbols:
+   get_all_binance(symbol, '1m', save = True)
+   get_all_binance(symbol, '5m', save = True)
+   get_all_binance(symbol, '1h', save = True)
+   get_all_binance(symbol, '1d', save = True)
+   time.sleep(3600)
